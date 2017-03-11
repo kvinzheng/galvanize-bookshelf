@@ -4,7 +4,9 @@ exports.up = function(knex, Promise) {
   return knex.schema.createTable('users', (table) => {
     table.increments().primary();
     table.string('first_name').notNullable().defaultTo('');
+    //table.specificType('first_name','varchar(255)').notNullable().defaultTo('');
     table.string('last_name').notNullable().defaultTo('');
+    //table.specificType('last_name', 'varchar(255)').notNullable().defaultTo('');
     table.string('email').unique().notNullable();
     table.specificType('hashed_password', 'char(60)').notNullable();
     // table.timestamp("created_at").defaultTo(knex.raw('now()')).notNullable();

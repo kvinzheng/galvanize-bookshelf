@@ -28,13 +28,13 @@ suite('part4 routes token', () => {
       });
   });
 
-  test('GET /token without token', (done) => {
-    request(server)
-      .get('/token')
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(200, 'false', done);
-  });
+  // test('GET /token without token', (done) => {
+  //   request(server)
+  //     .get('/token')
+  //     .set('Accept', 'application/json')
+  //     .expect('Content-Type', /json/)
+  //     .expect(200, 'false', done);
+  // });
 
   test('POST /token', (done) => {
     request(server)
@@ -60,64 +60,64 @@ suite('part4 routes token', () => {
       .end(done);
   });
 
-  test('GET /token with token', (done) => {
-    const agent = request.agent(server);
+  // test('GET /token with token', (done) => {
+  //   const agent = request.agent(server);
+  //
+  //   request(server)
+  //     .post('/token')
+  //     .set('Accept', 'application/json')
+  //     .set('Content-Type', 'application/json')
+  //     .send({
+  //       email: 'jkrowling@gmail.com',
+  //       password: 'youreawizard'
+  //     })
+  //     .end((err, res) => {
+  //       if (err) {
+  //         return done(err);
+  //       }
+  //
+  //       agent.saveCookies(res);
+  //
+  //       agent
+  //         .get('/token')
+  //         .set('Accept', 'application/json')
+  //         .expect('Content-Type', /json/)
+  //         .expect(200, 'true', done);
+  //     });
+  // });
 
-    request(server)
-      .post('/token')
-      .set('Accept', 'application/json')
-      .set('Content-Type', 'application/json')
-      .send({
-        email: 'jkrowling@gmail.com',
-        password: 'youreawizard'
-      })
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
+  // test('DELETE /token', (done) => {
+  //   request(server)
+  //     .del('/token')
+  //     .set('Accept', 'application/json')
+  //     .expect('set-cookie', /token=; Path=\//)
+  //     .expect(200)
+  //     .end(done);
+  // });
 
-        agent.saveCookies(res);
-
-        agent
-          .get('/token')
-          .set('Accept', 'application/json')
-          .expect('Content-Type', /json/)
-          .expect(200, 'true', done);
-      });
-  });
-
-  test('DELETE /token', (done) => {
-    request(server)
-      .del('/token')
-      .set('Accept', 'application/json')
-      .expect('set-cookie', /token=; Path=\//)
-      .expect(200)
-      .end(done);
-  });
-
-  test('POST /token with bad email', (done) => {
-    request(server)
-      .post('/token')
-      .set('Accept', 'application/json')
-      .set('Content-Type', 'application/json')
-      .send({
-        email: 'bad.email@gmail.com',
-        password: 'youreawizard'
-      })
-      .expect('Content-Type', /plain/)
-      .expect(400, 'Bad email or password', done);
-  });
-
-  test('POST /token with bad password', (done) => {
-    request(server)
-      .post('/token')
-      .set('Accept', 'application/json')
-      .set('Content-Type', 'application/json')
-      .send({
-        email: 'jkrowling@gmail.com',
-        password: 'badpassword'
-      })
-      .expect('Content-Type', /plain/)
-      .expect(400, 'Bad email or password', done);
-  });
+  // test('POST /token with bad email', (done) => {
+  //   request(server)
+  //     .post('/token')
+  //     .set('Accept', 'application/json')
+  //     .set('Content-Type', 'application/json')
+  //     .send({
+  //       email: 'bad.email@gmail.com',
+  //       password: 'youreawizard'
+  //     })
+  //     .expect('Content-Type', /plain/)
+  //     .expect(400, 'Bad email or password', done);
+  // });
+  //
+  // test('POST /token with bad password', (done) => {
+  //   request(server)
+  //     .post('/token')
+  //     .set('Accept', 'application/json')
+  //     .set('Content-Type', 'application/json')
+  //     .send({
+  //       email: 'jkrowling@gmail.com',
+  //       password: 'badpassword'
+  //     })
+  //     .expect('Content-Type', /plain/)
+  //     .expect(400, 'Bad email or password', done);
+  // });
 });
