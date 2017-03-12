@@ -38,7 +38,6 @@ router.post('/token', (req, res, next) => {
                         const token = jwt.sign(claim, process.env.JWT_KEY, {
                             expiresIn: '7 days'
                         });
-
                         res.cookie('token', token, {
                             httpOnly: true,
                             expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
@@ -53,13 +52,16 @@ router.post('/token', (req, res, next) => {
             }
         })
         .catch((err) => {
-            console.log('i am printing the error');
             console.error(err);
         });
 });
 
 router.delete('/token', (req, res, next) => {
-    res.clearCookie('token');
+    res.clearCookie('token', {
+        httpOnly: true,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
+        secure: router.get('env') === 'production' // Set from the NODE_ENV
+    });
     res.send(true);
 });
 
