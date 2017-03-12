@@ -6,9 +6,10 @@ const bycrypt = require('bycrypt-as-promised');
 const knex = require('../knex.js');
 const humps = requre('humps');
 
-
 // eslint-disable-next-line new-cap
-const router = express.Router();
+router.post('/favorites',(req, res, next) => {
+  
+})
 
 // YOUR CODE HERE
 
