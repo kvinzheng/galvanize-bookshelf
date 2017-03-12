@@ -7,7 +7,6 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const env = process.env.NODE_ENV || 'developments';
-// require('dotenv').config();
 
 router.get('/token', (req, res) => {
     jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, payload) => {
@@ -28,9 +27,7 @@ router.post('/token', (req, res, next) => {
             } else {
                 bcrypt.compare(req.body.password, user.hashed_password)
                     .then((result) => {
-                        console.log('what is result', result);
                         if (result === false) {
-                            console.log('i am sending error');
                             res.set('Content-Type', 'text/plain');
                             res.status(400).send('Bad email or password');
                         }
@@ -49,6 +46,7 @@ router.post('/token', (req, res, next) => {
                         });
 
                         res.set('Content-Type', 'application/json');
+                        console.log('log 2', user);
                         delete user.hashed_password;
                         res.send(humps.camelizeKeys(user));
                     });
@@ -60,34 +58,10 @@ router.post('/token', (req, res, next) => {
         });
 });
 
+router.delete('/token', (req, res, next) => {
+    res.clearCookie('token');
+    res.send(true);
+});
 
-
-
-
-
-
-
-
-// console.log('before compare', user);
-
-
-// router.post('/users', (req, res, next) => {
-//     bcrypt.hash(req.body.password, 12)
-//         .then((hashed_password) => {
-//             return knex('users')
-//                     .where({
-//                       email: req.body.email,
-//                       hashed_password: hashed_password
-//                     }).returning('*').first()
-//         .then((user) => {
-//             let camelizeResult = humps.camelizeKeys(user);
-//             delete camelizeResult.hashedPassword;
-//             res.status(200).json(camelizeResult);
-//         })
-//         .catch((err) => {
-//             next(err);
-//         });
-//     });
-// });
 
 module.exports = router;
