@@ -57,11 +57,7 @@ router.post('/token', (req, res, next) => {
 });
 
 router.delete('/token', (req, res, next) => {
-    res.clearCookie('token', {
-        httpOnly: true,
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
-        secure: router.get('env') === 'production' // Set from the NODE_ENV
-    });
+    res.clearCookie('token');
     res.send(true);
 });
 
