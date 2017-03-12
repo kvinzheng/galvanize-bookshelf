@@ -35,30 +35,30 @@ suite('part4 routes token', () => {
   //     .expect('Content-Type', /json/)
   //     .expect(200, 'false', done);
   // });
-
-  test('POST /token', (done) => {
-    request(server)
-      .post('/token')
-      .set('Accept', 'application/json')
-      .set('Content-Type', 'application/json')
-      .send({
-        email: 'jkrowling@gmail.com',
-        password: 'youreawizard'
-      })
-      .expect('set-cookie', /token=[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+; Path=\/;.+HttpOnly/)
-      .expect((res) => {
-        delete res.body.createdAt;
-        delete res.body.updatedAt;
-      })
-      .expect(200, {
-        id: 1,
-        firstName: 'Joanne',
-        lastName: 'Rowling',
-        email: 'jkrowling@gmail.com'
-      })
-      .expect('Content-Type', /json/)
-      .end(done);
-  });
+  //
+  // test('POST /token', (done) => {
+  //   request(server)
+  //     .post('/token')
+  //     .set('Accept', 'application/json')
+  //     .set('Content-Type', 'application/json')
+  //     .send({
+  //       email: 'jkrowling@gmail.com',
+  //       password: 'youreawizard'
+  //     })
+  //     .expect('set-cookie', /token=[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+; Path=\/;.+HttpOnly/)
+  //     .expect((res) => {
+  //       delete res.body.createdAt;
+  //       delete res.body.updatedAt;
+  //     })
+  //     .expect(200, {
+  //       id: 1,
+  //       firstName: 'Joanne',
+  //       lastName: 'Rowling',
+  //       email: 'jkrowling@gmail.com'
+  //     })
+  //     .expect('Content-Type', /json/)
+  //     .end(done);
+  // });
 
   // test('GET /token with token', (done) => {
   //   const agent = request.agent(server);
@@ -86,14 +86,14 @@ suite('part4 routes token', () => {
   //     });
   // });
 
-  // test('DELETE /token', (done) => {
-  //   request(server)
-  //     .del('/token')
-  //     .set('Accept', 'application/json')
-  //     .expect('set-cookie', /token=; Path=\//)
-  //     .expect(200)
-  //     .end(done);
-  // });
+  test('DELETE /token', (done) => {
+    request(server)
+      .del('/token')
+      .set('Accept', 'application/json')
+      .expect('set-cookie', /token=; Path=\//)
+      .expect(200)
+      .end(done);
+  });
 
   // test('POST /token with bad email', (done) => {
   //   request(server)
