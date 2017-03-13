@@ -10,7 +10,7 @@ const env = process.env.NODE_ENV || 'developments';
 let tokenUserid;
 // eslint-disable-next-line new-cap
 function tokenAuth(req, res, next) {
-    // console.log(' i have cookie', req.cookies);
+    console.log(' i have cookie', req.cookies);
     jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, payload) => {
         if (err) {
             res.set('Content-type', 'text/plain');
@@ -24,7 +24,7 @@ function tokenAuth(req, res, next) {
     });
 }
 
-// router.use(tokenAuth);
+// router.use('/favorites',tokenAuth);
 
 router.get('/favorites', tokenAuth, (req, res, next) => {
     return knex('favorites').innerJoin('books', 'favorites.id', 'books.id')
@@ -40,18 +40,26 @@ router.get('/favorites', tokenAuth, (req, res, next) => {
 router.get('/favorites/check?', tokenAuth, (req, res, next) => {
     var value = req.query.bookId;
     // console.log('am i getting here');
+    // console.log('what is the type of value',typeof value);
+    if( isNaN(value) ){
+      // console.log('it is not a number');
+      res.status(400);
+      res.set('Content-Type', 'text/plain');
+      return res.send('Book ID must be an integer');
+    }
+
     return knex('favorites')
         .innerJoin('books', 'favorites.id', 'books.id')
         .where({
             'book_id': value
         })
-        .first()
         .then((book) => {
-            if (book === undefined) {
+          console.log('query check',book[0]);
+            if (book[0] === undefined) {
                 res.send(false);
             }
             // console.log('am i here or not', book);
-            if (book) {
+            if (book[0]) {
                 res.set('Content-Type', 'application/json');
                 res.send(true);
             }
@@ -64,21 +72,58 @@ router.get('/favorites/check?', tokenAuth, (req, res, next) => {
 router.post('/favorites', tokenAuth, (req, res, next) => {
     // console.log('this is req body id ',req.body.bookId);
     // console.log('this is tokeruserid', tokenUserid);
-    return knex('favorites').insert([{
-            'book_id': req.body.bookId,
-            'user_id': tokenUserid
-        }])
-        .returning('*')
-        .then((book) => {
-            // console.log('did infomation get back?', book);
-            res.send(humps.camelizeKeys(book[0]));
-        })
-        .catch((err) => {
-            console.error(err);
-        })
+
+    if( (Number.isInteger(req.body.bookId) === false) ){
+      res.set('Content-Type', 'text/plain');
+      return res.status(400).send('Book ID must be an integer');
+    }
+
+      knex('books')
+      .where('id', req.body.bookId)
+      .first()
+      .then( (bookidExist) => {
+        // console.log('what is bookidExist', bookidExist);
+        if(bookidExist === undefined){
+          // console.log('Book not found');
+          res.set('Content-Type', 'text/plain')
+          return res.status(404).send('Book not found')
+        }
+      });
+
+
+      return knex('favorites').insert([{
+              'book_id': req.body.bookId,
+              'user_id': tokenUserid
+          }])
+          .returning('*')
+          .then((book) => {
+               console.log('did infomation get back?', book);
+              res.send(humps.camelizeKeys(book[0]));
+          })
+          .catch((err) => {
+              console.error(err);
+          })
+
 });
 
 router.delete('/favorites', tokenAuth, (req, res, next) => {
+  if( (Number.isInteger(req.body.bookId) === false) ){
+    res.set('Content-Type', 'text/plain');
+    return res.status(400).send('Book ID must be an integer');
+  }
+
+  knex('books')
+  .where('id', req.body.bookId)
+  .first()
+  .then( (bookidExist) => {
+    // console.log('what is bookidExist', bookidExist);
+    if(bookidExist === undefined){
+      // console.log('Book not found');
+      res.set('Content-Type', 'text/plain')
+      return res.status(404).send('Favorite not found')
+    }
+  });
+
     return knex('favorites').where({
             'book_id': req.body.bookId,
         })

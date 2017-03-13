@@ -44,7 +44,7 @@ suite('part5 routes favorites bonus', () => {
         done(err);
       });
   });
-
+  
   test('GET /favorites/check?bookId=one', (done) => {
     agent
       .get('/favorites/check?bookId=one')
