@@ -19,7 +19,7 @@ router.get('/books', (req, res, next) => {
 });
 
 router.get('/books/:id', (req, res, next) => {
-    console.log('I am here~~~~~again');
+    // console.log('I am here~~~~~again');
     knex('books')
         .orderBy('title', 'asc')
         .where('id', req.params.id)

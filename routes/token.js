@@ -4,7 +4,7 @@ const router = express.Router();
 const knex = require('../knex.js');
 const humps = require('humps');
 const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const env = process.env.NODE_ENV || 'developments';
 
@@ -45,7 +45,7 @@ router.post('/token', (req, res, next) => {
                         });
 
                         res.set('Content-Type', 'application/json');
-                        console.log('log 2', user);
+                        // console.log('log 2', user);
                         delete user.hashed_password;
                         res.send(humps.camelizeKeys(user));
                     });

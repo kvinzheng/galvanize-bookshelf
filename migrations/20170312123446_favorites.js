@@ -1,5 +1,4 @@
 'use strict';
-console.log('am i here');
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('favorites', (table) =>{
     table.increments().primary();
