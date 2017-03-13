@@ -1,15 +1,35 @@
 'use strict';
-
 const express = require('express');
 const router = express.Router();
-const bycrypt = require('bycrypt-as-promised');
 const knex = require('../knex.js');
-const humps = requre('humps');
+const humps = require('humps');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+const env = process.env.NODE_ENV || 'developments';
+
 
 // eslint-disable-next-line new-cap
-router.post('/favorites',(req, res, next) => {
-  
-})
+console.log('am i here?');
+router.get('/favorites',(req, res, next) => {
+  return knex('favorite')
+    .then( (user) =>{
+      console.log(user);
+      res.status(200).send(user)
+    })
+    .catch( (err) =>{
+      console.error(err);
+    });
+});
+
+router.get('/favorites/check?bookId=:req.params.id', function(req, res, next){
+    knex('favorites').where({book_id:req.params.id}).first()
+    .then( (article)=>{
+        if(article){
+          res.send(true);
+        }
+    })
+});
 
 // YOUR CODE HERE
 
