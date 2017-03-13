@@ -20,8 +20,8 @@ router.get('/favorites',(req, res, next) => {
     });
 });
 
-router.get('/favorites/check   ?bookId=:id', function(req, res, next) {
-  var value = req.query.bookId:
+router.get('/favorites/check?', function(req, res, next) {
+  var value = req.query.bookId;
     console.log('am i getting here');
     return knex('favorites')
       .innerJoin('books', 'favorites.id', 'books.id')
