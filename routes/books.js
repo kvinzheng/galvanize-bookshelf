@@ -35,7 +35,7 @@ router.get('/books/:id', (req, res, next) => {
         .then((match) => {
             return match === undefined;
         })) {
-        console.log('9000 or -1');
+        // console.log('9000 or -1');
         res.set('Content-Type', 'text/plain')
         return res.status(404).send('Not Found');
     }
@@ -117,7 +117,7 @@ router.patch('/books/:id', (req, res, next) => {
       .then((match) => {
           return match === undefined;
       })) {
-      console.log('9000 or -1');
+      // console.log('9000 or -1');
       res.set('Content-Type', 'text/plain')
       return res.status(404).send('Not Found');
   }
@@ -182,7 +182,7 @@ router.delete('/books/:id', (req, res, next) => {
             return res.send(humps.camelizeKeys(deletedbook1[0]));
         })
         .catch((err) => {
-            next(err);
+            next(err); //what is next?
         });
 });
 

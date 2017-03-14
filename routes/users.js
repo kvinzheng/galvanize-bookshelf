@@ -8,32 +8,53 @@ const knex = require('../knex.js');
 const humps = require('humps');
 
 router.post('/users', (req, res, next) => {
-    console.log('what is req.body.email?', req.body.email);
-    if (req.body.email === undefined) {
-        res.set('Content-type', 'text/plain');
-        return res.status(400).send('Email must not be blank');
-    }
-    if (req.body.password === undefined ) {
+// console.log('what is req.body.email?', req.body.email);
+if (req.body.email === undefined) {
+    res.set('Content-type', 'text/plain');
+    res.status(400).send('Email must not be blank');
+} else if (req.body.password === undefined) {
+    // console.log('what is password', req.body.password);
+    res.set('Content-type', 'text/plain');
+    return res.status(400).send('Password must be at least 8 characters long');
+} else {
+    //write a function that returns a promise that resolves to true if
+    //user exists, and false if it doesn't call it userExists, should also set the response values correctly in case uswer doesn't exist
 
-        console.log('what is password', req.body.password);
-        res.set('Content-type', 'text/plain');
-        return res.status(400).send('Password must be at least 8 characters long');
-    }
-    if (knex('users')
+    //call the function, and based on its resolution value, decide what to do
+
+    // userExists()
+    // .then((haveUser) => {
+    //   if (haveUser) {
+    //     res.set('Content-type', 'text/plain');
+    //     res.status(400).send('Email already exists');
+    //     return false;
+    //   } else {
+    //
+    //   }
+    // })
+    knex('users')
         .where({
             'email': req.body.email
         })
         .returning('*')
-        .then((match) => {
-            return match === undefined;
-        })) {
-        console.log('did i pass checking email?');
-        res.set('Content-type', 'text/plain');
-        return res.status(400).send('Email already exists');
-    }
-    
-    bcrypt.hash(req.body.password, 12)
+        .then((exist) => {
+            if (exist[0]) {
+              console.log('what is exist',exist[0]);
+                res.set('Content-type', 'text/plain');
+                res.status(400).send('Email already exists');
+                // throw new Error ('Email already exists')
+                console.log('did i go here?');
+                return false;
+            }
+            return true;
+        })
+        .then((working) => {
+          //make decision based on emailExists
+          console.log('the value of me inserting',working);
+            return bcrypt.hash(req.body.password, 12);
+        })
         .then((hashed_password) => {
+          console.log('what is hash?',hashed_password);
             return knex('users')
                 .insert({
                     first_name: req.body.firstName,
@@ -43,7 +64,7 @@ router.post('/users', (req, res, next) => {
                 }).returning('*');
         })
         .then((users) => {
-            console.log('what is users', users);
+            // console.log('what is users', users);
             const claim = {
                 userId: users[0].id
             };
@@ -55,14 +76,20 @@ router.post('/users', (req, res, next) => {
                 expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
                 secure: router.get('env') === 'production' // Set from the NODE_ENV
             });
-            console.log('did i create the cookie and token');
+            // console.log('did i create the cookie and token');
             let camelizeResult = humps.camelizeKeys(users[0]);
             delete camelizeResult.hashedPassword;
-            res.status(200).json(camelizeResult);
+            res.set('Content-Type', 'application/json');
+            res.status(200).send(camelizeResult);
         })
         .catch((err) => {
+            // res.set('Content-type', 'text/plain');
+            // return res.status(400).send('Email already exists');
+            console.log('did i pass checking email?');
             next(err);
         });
+
+}
 });
 
 module.exports = router;

@@ -85,7 +85,7 @@ suite('part4 routes token', () => {
           .expect(200, 'true', done);
       });
   });
-
+  //
   test('DELETE /token', (done) => {
     request(server)
       .del('/token')
@@ -94,7 +94,7 @@ suite('part4 routes token', () => {
       .expect(200)
       .end(done);
   });
-
+  //
   test('POST /token with bad email', (done) => {
     request(server)
       .post('/token')

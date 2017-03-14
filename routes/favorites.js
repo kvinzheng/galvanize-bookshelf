@@ -10,7 +10,7 @@ const env = process.env.NODE_ENV || 'developments';
 let tokenUserid;
 // eslint-disable-next-line new-cap
 router.use('/favorites', (req, res, next) =>{
-      console.log(' i have cookie', req.cookies);
+      // console.log(' i have cookie', req.cookies);
       jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, payload) => {
           if (err) {
               res.set('Content-type', 'text/plain');
@@ -51,7 +51,7 @@ router.get('/favorites/check?',  (req, res, next) => {
             'book_id': value
         })
         .then((book) => {
-            console.log('query check', book[0]);
+            // console.log('query check', book[0]);
             if (book[0] === undefined) {
                 res.send(false);
             }
@@ -91,7 +91,7 @@ router.post('/favorites', (req, res, next) => {
         }])
         .returning('*')
         .then((book) => {
-            console.log('did infomation get back?', book);
+            // console.log('did infomation get back?', book);
             res.send(humps.camelizeKeys(book[0]));
         })
         .catch((err) => {
