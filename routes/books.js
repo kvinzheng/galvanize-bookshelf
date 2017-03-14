@@ -14,6 +14,8 @@ router.get('/books', (req, res, next) => {
             res.send(humps.camelizeKeys(manybooks));
         })
         .catch((err) => {
+            res.set('Content-type','text/plain');
+            res.status(404).send('Not Found');
             next(err);
         });
 });
