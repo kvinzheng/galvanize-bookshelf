@@ -2,7 +2,7 @@
 //This will trigger when I use knex migrate: latest
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('users', (table) => {
-    table.increments().primary();
+    table.increments("id").primary();
     table.string('first_name').notNullable().defaultTo('');
     //table.specificType('first_name','varchar(255)').notNullable().defaultTo('');
     table.string('last_name').notNullable().defaultTo('');

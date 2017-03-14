@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt-as-promised');
+// const bcrypt      = require('bcryptjs')
 const knex = require('../knex.js');
 const humps = require('humps');
 
