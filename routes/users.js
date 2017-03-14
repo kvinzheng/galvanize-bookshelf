@@ -31,6 +31,7 @@ router.post('/users', (req, res, next) => {
         res.set('Content-type', 'text/plain');
         return res.status(400).send('Email already exists');
     }
+    
     bcrypt.hash(req.body.password, 12)
         .then((hashed_password) => {
             return knex('users')

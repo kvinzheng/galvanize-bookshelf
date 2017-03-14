@@ -11,7 +11,7 @@ router.get('/books', (req, res, next) => {
         .then((manybooks) => {
             res.set('Content-Type', 'application/json')
             // console.log(manybooks.camelize);
-            res.send(humps.camelizeKeys(manybooks));
+            return res.send(humps.camelizeKeys(manybooks));
         })
         .catch((err) => {
             next(err);
@@ -36,7 +36,7 @@ router.get('/books/:id', (req, res, next) => {
             return match === undefined;
         })) {
         console.log('9000 or -1');
-        res.set('Content-type', 'text/plain');
+        res.set('Content-Type', 'text/plain')
         return res.status(404).send('Not Found');
     }
 
@@ -49,7 +49,7 @@ router.get('/books/:id', (req, res, next) => {
             }
             res.set('Content-Type', 'application/json')
             //console.log(humps.camelizeKeys(onebook[0]));
-            res.send(humps.camelizeKeys(onebook[0]));
+            return res.send(humps.camelizeKeys(onebook[0]));
         })
         .catch((err) => {
             next(err);
@@ -93,7 +93,8 @@ router.post('/books', (req, res, next) => {
             if (!manybooks) {
                 return next();
             }
-            res.send(humps.camelizeKeys(manybooks[0]));
+            res.set('Content-Type', 'application/json')
+            return res.send(humps.camelizeKeys(manybooks[0]));
         })
         .catch((err) => {
             next(err);
@@ -117,7 +118,7 @@ router.patch('/books/:id', (req, res, next) => {
           return match === undefined;
       })) {
       console.log('9000 or -1');
-      res.set('Content-type', 'text/plain');
+      res.set('Content-Type', 'text/plain')
       return res.status(404).send('Not Found');
   }
 
@@ -139,7 +140,8 @@ router.patch('/books/:id', (req, res, next) => {
                 }).returning('*')
                 .where('id', req.params.id);
         }).then((manybooks) => {
-            res.send(humps.camelizeKeys(manybooks[0]));
+          res.set('Content-Type', 'application/json')
+            return res.send(humps.camelizeKeys(manybooks[0]));
         })
         .catch((err) => {
             next(err);
@@ -162,11 +164,10 @@ router.delete('/books/:id', (req, res, next) => {
       .then((match) => {
           return match === undefined;
       })) {
-      console.log('9000 or -1');
-      res.set('Content-type', 'text/plain');
-      return res.status(404).send('Not Found');
+      res.set('Content-Type', 'text/plain')
+      res.status(404).send('Not Found');
   }
-    knex('books')
+   knex('books')
         .del()
         .where('id', req.params.id).returning('*')
         .then((deletedbook) => {
@@ -177,10 +178,11 @@ router.delete('/books/:id', (req, res, next) => {
         })
         .then((deletedbook1) => {
             delete deletedbook1[0].id;
-            res.send(humps.camelizeKeys(deletedbook1[0]));
+            res.set('Content-Type', 'application/json')
+            return res.send(humps.camelizeKeys(deletedbook1[0]));
         })
         .catch((err) => {
-            console.err(err);
+            next(err);
         });
 });
 

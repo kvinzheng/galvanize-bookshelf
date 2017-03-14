@@ -112,7 +112,7 @@ router.delete('/favorites', (req, res, next) => {
             // console.log('what is bookidExist', bookidExist);
             if (bookidExist === undefined) {
                 // console.log('Book not found');
-                res.set('Content-Type', 'text/plain')
+                res.set('Content-Type', 'text/plain');
                 return res.status(404).send('Favorite not found')
             }
         });
