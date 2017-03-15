@@ -161,23 +161,28 @@ router.delete('/books/:id', (req, res, next) => {
       return res.send('Not Found');
   }
 
-  if (knex('books')
-      .where({
-          'id':req.params.id
-      })
-      .returning('*')
-      .then((match) => {
-          return match === undefined;
-      })) {
-      res.set('Content-Type', 'text/plain')
-      res.status(404).send('Not Found');
-  }
+  // knex('books')
+  //     .where({
+  //         'id':req.params.id
+  //     })
+  //     .returning('*')
+  //     .then((match) => {
+  //       if(match[0]){
+  //         console.log('what is match',match[0]);
+  //         res.set('Content-Type', 'text/plain')
+  //         return res.status(404).send('Not Found');
+  //       }
+  //     })
+
    knex('books')
         .del()
         .where('id', req.params.id).returning('*')
         .then((deletedbook) => {
-            if (!deletedbook) {
-                return next();
+          console.log('did i log something here?');
+          console.log('what is match',deletedbook);
+            if (!deletedbook[0]) {
+              res.set('Content-Type', 'text/plain')
+              return res.status(404).send('Not Found');
             }
             return deletedbook;
         })
