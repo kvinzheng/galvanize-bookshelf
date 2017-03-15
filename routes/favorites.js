@@ -13,6 +13,7 @@ router.use('/favorites', (req, res, next) =>{
       // console.log(' i have cookie', req.cookies);
       jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, payload) => {
           if (err) {
+              console.log('i have an err here',err);
               res.set('Content-type', 'text/plain');
               res.status(401).send('Unauthorized');
           } else {
@@ -67,36 +68,27 @@ router.get('/favorites/check?',  (req, res, next) => {
 });
 
 router.post('/favorites', (req, res, next) => {
-    // console.log('this is req body id ',req.body.bookId);
-    // console.log('this is tokeruserid', tokenUserid);
-    if ((Number.isInteger(req.body.bookId) === false)) {
-        res.set('Content-Type', 'text/plain');
-        return res.status(400).send('Book ID must be an integer');
-    }
+  if ((Number.isInteger(req.body.bookId) === false)) {
+      res.set('Content-Type', 'text/plain');
+      return res.status(400).send('Book ID must be an integer');
+  }
 
-    knex('books')
-        .where('id', req.body.bookId)
-        .first()
-        .then((bookidExist) => {
-            // console.log('what is bookidExist', bookidExist);
-            if (bookidExist === undefined) {
-                // console.log('Book not found');
-                res.set('Content-Type', 'text/plain')
-                return res.status(404).send('Book not found')
-            }
-        });
-    return knex('favorites').insert([{
-            'book_id': req.body.bookId,
-            'user_id': tokenUserid
-        }])
-        .returning('*')
-        .then((book) => {
-            // console.log('did infomation get back?', book);
-            res.send(humps.camelizeKeys(book[0]));
-        })
-        .catch((err) => {
-            console.error(err);
-        })
+  else {
+   knex('favorites')
+    .insert({
+    'book_id': req.body.bookId,
+    'user_id': tokenUserid
+      })
+    .returning('*')
+      .then((book) => {
+          res.send(humps.camelizeKeys(book[0]));
+      })
+      .catch((err) => {
+        res.set('Content-Type', 'text/plain')
+        return res.status(404).send('Book not found')
+        console.error(err);
+      })
+    }
 });
 
 router.delete('/favorites', (req, res, next) => {
