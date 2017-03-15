@@ -19,40 +19,43 @@ router.get('/books', (req, res, next) => {
 });
 
 router.get('/books/:id', (req, res, next) => {
-    // console.log('I am here~~~~~again');
+    console.log('I am here~~~~~again');
     if(isNaN(req.params.id)) {
-        // console.log('it is not a number');
+        console.log('it is not a number');
         res.status(404);
         res.set('Content-Type', 'text/plain');
         return res.send('Not Found');
     }
 
-    if (knex('books')
-        .where({
-            'id':req.params.id
-        })
-        .returning('*')
-        .then((match) => {
-            return match === undefined;
-        })) {
-        // console.log('9000 or -1');
-        res.set('Content-Type', 'text/plain')
-        return res.status(404).send('Not Found');
-    }
+    // knex('books')
+    //     .where({
+    //         'id':req.params.id
+    //     })
+    //     .returning('*')
+    //     .then((match) => {
+    //         if (match === undefined) {
+    //           console.log('9000 or -1');
+    //           res.set('Content-Type', 'text/plain')
+    //           return res.status(404).send('Not Found');
+    //         }
+    //     })
 
     knex('books')
         .orderBy('title', 'asc')
         .where('id', req.params.id)
         .then((onebook) => {
-            if (!onebook) {
-                return next();
+          console.log('what is one book',onebook);
+            if (!onebook[0]) {
+              console.log('9000 or -1');
+              res.set('Content-Type', 'text/plain')
+              return res.status(404).send('Not Found');
             }
             res.set('Content-Type', 'application/json')
-            //console.log(humps.camelizeKeys(onebook[0]));
+            console.log('am i here');
             return res.send(humps.camelizeKeys(onebook[0]));
         })
         .catch((err) => {
-            next(err);
+            console.error(err);
         });
 });
 
@@ -109,24 +112,26 @@ router.patch('/books/:id', (req, res, next) => {
       return res.send('Not Found');
   }
 
-  if (knex('books')
-      .where({
-          'id':req.params.id
-      })
-      .returning('*')
-      .then((match) => {
-          return match === undefined;
-      })) {
-      // console.log('9000 or -1');
-      res.set('Content-Type', 'text/plain')
-      return res.status(404).send('Not Found');
-  }
+  // if (knex('books')
+  //     .where({
+  //         'id':req.params.id
+  //     })
+  //     .returning('*')
+  //     .then((match) => {
+  //         return match === undefined;
+  //     })) {
+  //     // console.log('9000 or -1');
+  //     res.set('Content-Type', 'text/plain')
+  //     return res.status(404).send('Not Found');
+  // }
 
     knex('books')
         .where('id', req.params.id)
         .then((manybooks) => {
-            if (!manybooks) {
-                return next();
+            if (!manybooks[0]) {
+              res.set('Content-Type', 'text/plain')
+              return res.status(404).send('Not Found');
+                // return next();
             }
 
             return knex('books')
