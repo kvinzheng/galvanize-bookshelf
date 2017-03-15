@@ -62,7 +62,7 @@ router.get('/books/:id', (req, res, next) => {
         });
 });
 
-router.post('/books', (req, res, next) => {
+router.post('/books', ev(validations.post), (req, res, next) => {
     // if(req.body.title === undefined){
     //   return res.status(400).set('Content-Type', 'text/plain')
     //   .send('Title must not be blank');

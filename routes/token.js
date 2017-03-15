@@ -24,7 +24,6 @@ const validations = require('../validations/users');
 //           }
 //       });
 // };
-
 router.get('/token', (req, res) => {
     jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, payload) => {
         if (err) {
@@ -36,16 +35,16 @@ router.get('/token', (req, res) => {
     });
 });
 
-router.post('/token', (req, res, next) => {
+router.post('/token', ev(validations.post), (req, res, next) => {
   // console.log("i am kevin",req.body.email);
-    if(req.body.email === undefined){
-      res.set('Content-type', 'text/plain');
-      return res.status(400).send('Email must not be blank');
-    }
-     if(req.body.password === undefined){
-      res.set('Content-type', 'text/plain');
-      return res.status(400).send('Password must not be blank');
-    }
+    // if(req.body.email === undefined){
+    //   res.set('Content-type', 'text/plain');
+    //   return res.status(400).send('Email must not be blank');
+    // }
+    //  if(req.body.password === undefined){
+    //   res.set('Content-type', 'text/plain');
+    //   return res.status(400).send('Password must not be blank');
+    // }
 
     let user;
 
