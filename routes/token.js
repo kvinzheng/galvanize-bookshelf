@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt');
 const env = process.env.NODE_ENV || 'developments';
 let tokenId;
 
+const ev = require('express-validation');
+const validations = require('../validations/users');
 // function Auth(req, res, next){
 //       console.log(' i have cookie', req.cookies);
 //       jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, payload) => {

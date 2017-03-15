@@ -7,7 +7,10 @@ const jwt = require('jsonwebtoken');
 const knex = require('../knex.js');
 const humps = require('humps');
 
-router.post('/users', (req, res, next) => {
+const ev = require('express-validation');
+const validations = require('../validations/users');
+
+router.post('/users', ev(validations.post),(req, res, next) => {
     // console.log('what is req.body.email?', req.body.email);
     if (req.body.email === undefined) {
         res.set('Content-type', 'text/plain');
@@ -17,21 +20,6 @@ router.post('/users', (req, res, next) => {
         res.set('Content-type', 'text/plain');
         return res.status(400).send('Password must be at least 8 characters long');
     } else {
-        //write a function that returns a promise that resolves to true if
-        //user exists, and false if it doesn't call it userExists, should also set the response values correctly in case uswer doesn't exist
-
-        //call the function, and based on its resolution value, decide what to do
-
-        // userExists()
-        // .then((haveUser) => {
-        //   if (haveUser) {
-        //     res.set('Content-type', 'text/plain');
-        //     res.status(400).send('Email already exists');
-        //     return false;
-        //   } else {
-        //
-        //   }
-        // })
         knex('users')
             .where({
                 'email': req.body.email

@@ -5,6 +5,9 @@ const humps = require('humps');
 const router = express.Router();
 const knex = require('../knex');
 
+const ev = require('express-validation');
+const validations = require('../validations/users');
+
 router.get('/books', (req, res, next) => {
     knex('books')
         .orderBy('title', 'asc')
@@ -60,26 +63,26 @@ router.get('/books/:id', (req, res, next) => {
 });
 
 router.post('/books', (req, res, next) => {
-    if(req.body.title === undefined){
-      return res.status(400).set('Content-Type', 'text/plain')
-      .send('Title must not be blank');
-    }
-    else if(req.body.author === undefined){
-      res.status(400).set('Content-Type', 'text/plain')
-      .send('Author must not be blank');
-    }
-    else if(req.body.genre === undefined){
-      res.status(400).set('Content-Type', 'text/plain')
-      .send('Genre must not be blank');
-    }
-    else if(req.body.description === undefined){
-      res.status(400).set('Content-Type', 'text/plain')
-      .send('Description must not be blank');
-    }
-    else if(req.body.coverUrl === undefined){
-      res.status(400).set('Content-Type', 'text/plain')
-      .send('Cover URL must not be blank');
-    }
+    // if(req.body.title === undefined){
+    //   return res.status(400).set('Content-Type', 'text/plain')
+    //   .send('Title must not be blank');
+    // }
+    // else if(req.body.author === undefined){
+    //   res.status(400).set('Content-Type', 'text/plain')
+    //   .send('Author must not be blank');
+    // }
+    // else if(req.body.genre === undefined){
+    //   res.status(400).set('Content-Type', 'text/plain')
+    //   .send('Genre must not be blank');
+    // }
+    // else if(req.body.description === undefined){
+    //   res.status(400).set('Content-Type', 'text/plain')
+    //   .send('Description must not be blank');
+    // }
+    // else if(req.body.coverUrl === undefined){
+    //   res.status(400).set('Content-Type', 'text/plain')
+    //   .send('Cover URL must not be blank');
+    // }
 
     knex('books')
         .insert({

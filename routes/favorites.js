@@ -8,6 +8,9 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const env = process.env.NODE_ENV || 'developments';
 let tokenUserid;
+
+const ev = require('express-validation');
+const validations = require('../validations/favorites');
 // eslint-disable-next-line new-cap
 router.use('/favorites', (req, res, next) =>{
       // console.log(' i have cookie', req.cookies);
@@ -66,19 +69,19 @@ router.get('/favorites/check?',  (req, res, next) => {
         })
 });
 
-router.post('/favorites', (req, res, next) => {
+router.post('/favorites',ev(validations.post), (req, res, next) => {
     // console.log('this is req body id ',req.body.bookId);
     // console.log('this is tokeruserid', tokenUserid);
-    if ((Number.isInteger(req.body.bookId) === false)) {
-        res.set('Content-Type', 'text/plain');
-        return res.status(400).send('Book ID must be an integer');
-    }
+    // if ((Number.isInteger(req.body.bookId) === false)) {
+    //     res.set('Content-Type', 'text/plain');
+    //     return res.status(400).send('Book ID must be an integer');
+    // }
 
     knex('books')
         .where('id', req.body.bookId)
         .first()
         .then((bookidExist) => {
-            // console.log('what is bookidExist', bookidExist);
+            console.log('what is bookidExist', bookidExist);
             if (bookidExist === undefined) {
                 // console.log('Book not found');
                 res.set('Content-Type', 'text/plain')

@@ -1,5 +1,5 @@
 'use strict';
-
+// const Joi = require('joi');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
@@ -77,5 +77,7 @@ app.listen(port, () => {
     console.log('Listening on port', port);
   }
 });
+
+
 
 module.exports = app;
