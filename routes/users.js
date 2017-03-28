@@ -8,7 +8,7 @@ const knex = require('../knex.js');
 const humps = require('humps');
 
 const ev = require('express-validation');
-const validations = require('../validations/users');
+const validations = require('../validations/users.js');
 
 router.post('/users', ev(validations.post),(req, res, next) => {
     // console.log('what is req.body.email?', req.body.email);

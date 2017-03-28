@@ -10,7 +10,7 @@ const env = process.env.NODE_ENV || 'developments';
 let tokenUserid;
 
 const ev = require('express-validation');
-const validations = require('../validations/favorites');
+const validations = require('../validations/favorites.js');
 // eslint-disable-next-line new-cap
 router.use('/favorites', (req, res, next) =>{
       // console.log(' i have cookie', req.cookies);

@@ -6,7 +6,7 @@ const router = express.Router();
 const knex = require('../knex');
 
 const ev = require('express-validation');
-const validations = require('../validations/users');
+const validations = require('../validations/books.js');
 
 router.get('/books', (req, res, next) => {
     knex('books')
@@ -114,7 +114,6 @@ router.patch('/books/:id', (req, res, next) => {
       res.set('Content-Type', 'text/plain');
       return res.send('Not Found');
   }
-
   // if (knex('books')
   //     .where({
   //         'id':req.params.id
@@ -127,7 +126,6 @@ router.patch('/books/:id', (req, res, next) => {
   //     res.set('Content-Type', 'text/plain')
   //     return res.status(404).send('Not Found');
   // }
-
     knex('books')
         .where('id', req.params.id)
         .then((manybooks) => {
