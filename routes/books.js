@@ -10,7 +10,6 @@ router.get('/books', (req, res, next) => {
         .orderBy('title', 'asc')
         .then((manybooks) => {
             res.set('Content-Type', 'application/json')
-            // console.log(manybooks.camelize);
             return res.send(humps.camelizeKeys(manybooks));
         })
         .catch((err) => {
@@ -19,9 +18,7 @@ router.get('/books', (req, res, next) => {
 });
 
 router.get('/books/:id', (req, res, next) => {
-    console.log('I am here~~~~~again');
     if(isNaN(req.params.id)) {
-        console.log('it is not a number');
         res.status(404);
         res.set('Content-Type', 'text/plain');
         return res.send('Not Found');
@@ -44,14 +41,11 @@ router.get('/books/:id', (req, res, next) => {
         .orderBy('title', 'asc')
         .where('id', req.params.id)
         .then((onebook) => {
-          console.log('what is one book',onebook);
             if (!onebook[0]) {
-              console.log('9000 or -1');
               res.set('Content-Type', 'text/plain')
               return res.status(404).send('Not Found');
             }
             res.set('Content-Type', 'application/json')
-            console.log('am i here');
             return res.send(humps.camelizeKeys(onebook[0]));
         })
         .catch((err) => {
@@ -80,7 +74,7 @@ router.post('/books', (req, res, next) => {
       res.status(400).set('Content-Type', 'text/plain')
       .send('Cover URL must not be blank');
     }
-
+    else{
     knex('books')
         .insert({
             id: req.body.id,
@@ -96,12 +90,15 @@ router.post('/books', (req, res, next) => {
             if (!manybooks) {
                 return next();
             }
+            else{
             res.set('Content-Type', 'application/json')
             return res.send(humps.camelizeKeys(manybooks[0]));
+            }
         })
         .catch((err) => {
             next(err);
         });
+    }
 });
 
 router.patch('/books/:id', (req, res, next) => {
@@ -131,9 +128,8 @@ router.patch('/books/:id', (req, res, next) => {
             if (!manybooks[0]) {
               res.set('Content-Type', 'text/plain')
               return res.status(404).send('Not Found');
-                // return next();
             }
-
+            else {
             return knex('books')
                 .update({
                     id: req.body.id,
@@ -142,25 +138,28 @@ router.patch('/books/:id', (req, res, next) => {
                     genre: req.body.genre,
                     description: req.body.description,
                     cover_url: req.body.coverUrl
-                }).returning('*')
-                .where('id', req.params.id);
-        }).then((manybooks) => {
-          res.set('Content-Type', 'application/json')
-            return res.send(humps.camelizeKeys(manybooks[0]));
+                })
+                .returning('*')
+                .where('id', req.params.id)
+              }
+            })
+              // }
+        .then((manybooks) => {
+          // res.set('Content-Type', 'application/json')
+          res.json(humps.camelizeKeys(manybooks[0]));
         })
         .catch((err) => {
             next(err);
         });
+      // }
 });
 
 router.delete('/books/:id', (req, res, next) => {
   if(isNaN(req.params.id)) {
-      // console.log('it is not a number');
       res.status(404);
       res.set('Content-Type', 'text/plain');
       return res.send('Not Found');
   }
-
   // knex('books')
   //     .where({
   //         'id':req.params.id
@@ -173,29 +172,48 @@ router.delete('/books/:id', (req, res, next) => {
   //         return res.status(404).send('Not Found');
   //       }
   //     })
+  else{
 
    knex('books')
-        .del()
         .where('id', req.params.id).returning('*')
+        // .first()
+        // .del()
         .then((deletedbook) => {
-          console.log('did i log something here?');
-          console.log('what is match',deletedbook);
+
             if (!deletedbook[0]) {
               res.set('Content-Type', 'text/plain')
               return res.status(404).send('Not Found');
             }
-            return deletedbook;
+            else{
+              // console.log('i am here',deletedbook[0]);
+
+                // delete deletedbook[0].id;
+                // console.log('what is deletedbook[0]',deletedbook[0]);
+                // res.set('Content-Type', 'application/json')
+                // return res.send(humps.camelizeKeys(deletedbook1[0]));
+                return knex('books')
+                      .del()
+                      .first()
+                      .where('id', req.params.id).returning('*');
+            }
+            // return deletedbook;
         })
         .then((deletedbook1) => {
-            delete deletedbook1[0].id;
-            res.set('Content-Type', 'application/json')
-            return res.send(humps.camelizeKeys(deletedbook1[0]));
+          if (!deletedbook1) {
+            // res.set('Content-Type', 'text/plain')
+            return res.status(404).send('Not Found');
+          }
+          else{
+          // console.log('deletedbook1',deletedbook1);
+            delete deletedbook1.id;
+            // res.set('Content-Type', 'application/json')
+          res.json(humps.camelizeKeys(deletedbook1));
+          }
         })
         .catch((err) => {
             next(err); //what is next?
         });
+      }
 });
-
-
 
 module.exports = router;

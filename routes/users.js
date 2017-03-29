@@ -50,11 +50,11 @@ router.post('/users', (req, res, next) => {
             })
             .then((working) => {
                 //make decision based on emailExists
-                console.log('the value of me inserting', working);
+                // console.log('the value of me inserting', working);
                 return bcrypt.hash(req.body.password, 12);
             })
             .then((hashed_password) => {
-                console.log('what is hash?', hashed_password);
+                // console.log('what is hash?', hashed_password);
                 return knex('users')
                     .insert({
                         first_name: req.body.firstName,
@@ -85,7 +85,7 @@ router.post('/users', (req, res, next) => {
             .catch((err) => {
                 // res.set('Content-type', 'text/plain');
                 // return res.status(400).send('Email already exists');
-                console.log('did i pass checking email?');
+                // console.log('did i pass checking email?');
                 next(err);
             });
 

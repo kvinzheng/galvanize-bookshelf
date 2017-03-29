@@ -17,9 +17,10 @@ router.use('/favorites', (req, res, next) =>{
               res.set('Content-type', 'text/plain');
               res.status(401).send('Unauthorized');
           } else {
-              // console.log('this is the payload',payload);
+              console.log('this is the payload',payload);
               // { userId: 1, iat: 1489382285, exp: 1489987085 }
               tokenUserid = payload.userId;
+              console.log('what is now?', payload);
               next();
           }
       });
@@ -37,10 +38,7 @@ router.get('/favorites',  (req, res, next) => {
 
 router.get('/favorites/check?',  (req, res, next) => {
     var value = req.query.bookId;
-    // console.log('am i getting here');
-    // console.log('what is the type of value',typeof value);
     if (isNaN(value)) {
-        // console.log('it is not a number');
         res.status(400);
         res.set('Content-Type', 'text/plain');
         return res.send('Book ID must be an integer');
@@ -52,11 +50,9 @@ router.get('/favorites/check?',  (req, res, next) => {
             'book_id': value
         })
         .then((book) => {
-            // console.log('query check', book[0]);
             if (book[0] === undefined) {
                 res.send(false);
             }
-            // console.log('am i here or not', book);
             if (book[0]) {
                 res.set('Content-Type', 'application/json');
                 res.send(true);
