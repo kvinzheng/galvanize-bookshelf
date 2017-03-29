@@ -38,7 +38,6 @@ router.post('/token', (req, res, next) => {
                     res.status(400).send('Bad email or password');
                 } else {
                     const password = user.hashed_password
-                    // validUser = user
                     return bcrypt.compare(req.body.password, password)
                 }
             })
@@ -68,7 +67,6 @@ router.post('/token', (req, res, next) => {
                     res.set('Content-Type', 'application/json');
                     res.status(200).send(user);
                 }
-                // }
             })
             .catch((err) => {
                 // res.set('Content-type', 'text/plain');
@@ -77,8 +75,7 @@ router.post('/token', (req, res, next) => {
             });
     }
 });
-//     }
-// });
+
 
 router.delete('/token', (req, res, next) => {
     res.clearCookie('token', {
