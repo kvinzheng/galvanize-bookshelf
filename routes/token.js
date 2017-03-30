@@ -21,6 +21,7 @@ router.get('/token', (req, res) => {
 });
 
 router.post('/token', (req, res, next) => {
+    let validUser;
     if (req.body.email === undefined) {
         res.set('Content-type', 'text/plain');
         res.status(400).send('Email must not be blank');
@@ -30,29 +31,21 @@ router.post('/token', (req, res, next) => {
     } else {
         knex('users')
             .where('email', req.body.email)
-            .returning('*')
             .first()
             .then((user) => {
                 if (user === undefined) {
                     res.set('Content-type', 'text/plain');
                     res.status(400).send('Bad email or password');
                 } else {
+                  validUser = user;
                     const password = user.hashed_password
                     return bcrypt.compare(req.body.password, password)
                 }
             })
-            .then((result) => {
-                if (result === true) {
-                    return knex('users').where('email', req.body.email).select('id', 'first_name', 'last_name', 'email')
-                } else if (result === false) {
-                    res.set('Content-type', 'text/plain');
-                    res.status(400).send('Bad email or password');
-                }
-            })
             .then((authUser) => {
-                if (authUser) {
+              if(authUser === true){
                     const claim = {
-                        userId: authUser[0].id
+                        userId: validUser.id
                     };
                     const token = jwt.sign(claim, process.env.JWT_KEY, {
                         expiresIn: '7 days'
@@ -63,9 +56,14 @@ router.post('/token', (req, res, next) => {
                         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
                         secure: router.get('env') === 'development' // Set from the NODE_ENV
                     });
-                    const user = humps.camelizeKeys(authUser[0])
+                    delete validUser.hashed_password;
+                    const result = humps.camelizeKeys(validUser)
                     res.set('Content-Type', 'application/json');
-                    res.status(200).send(user);
+                    res.status(200).send(result);
+                }
+                else if (authUser === false){
+                  res.set('Content-type', 'text/plain');
+                  res.status(400).send('Bad email or password');
                 }
             })
             .catch((err) => {
