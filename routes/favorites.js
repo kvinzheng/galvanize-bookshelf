@@ -13,14 +13,14 @@ router.use('/favorites', (req, res, next) =>{
       // console.log(' i have cookie', req.cookies);
       jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, payload) => {
           if (err) {
-              console.log('i have an err here',err);
+              // console.log('i have an err here',err);
               res.set('Content-type', 'text/plain');
               res.status(401).send('Unauthorized');
           } else {
-              console.log('this is the payload',payload);
+              // console.log('this is the payload',payload);
               // { userId: 1, iat: 1489382285, exp: 1489987085 }
               tokenUserid = payload.userId;
-              console.log('what is now?', payload);
+              // console.log('what is now?', payload);
               next();
           }
       });
@@ -32,7 +32,7 @@ router.get('/favorites',  (req, res, next) => {
             res.status(200).send(humps.camelizeKeys(user))
         })
         .catch((err) => {
-            console.error(err);
+            next(err);
         });
 });
 
@@ -50,7 +50,9 @@ router.get('/favorites/check?',  (req, res, next) => {
             'book_id': value
         })
         .then((book) => {
+          // console.log('what is book', book);
             if (book[0] === undefined) {
+                res.set('Content-Type', 'application/json');
                 res.send(false);
             }
             if (book[0]) {
@@ -59,6 +61,8 @@ router.get('/favorites/check?',  (req, res, next) => {
             }
         })
         .catch((err) => {
+            res.set('Content-type', 'text/plain')
+            res.sendStatus(404);
             console.error(err);
         })
 });
@@ -120,9 +124,11 @@ router.delete('/favorites', (req, res, next) => {
         })
         .then((deletedPortion) => {
             // console.log('what is deletedPortion', deletedPortion);
+            if(deletedPortion[0]){
             delete deletedPortion[0].id;
             // console.log('result is here',deletedPortion[0]);
             res.send(humps.camelizeKeys(deletedPortion[0]));
+          }
         })
         .catch((err) => {
             next(err);
