@@ -1,7 +1,6 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
-// const bcrypt = require('bcrypt-as-promised');
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const knex = require('../knex.js');
@@ -34,7 +33,6 @@ router.post('/users', (req, res, next) => {
             .where(
                 'email', req.body.email
             )
-            .returning('*')
             .then((exist) => {
                 if (exist[0]) {
                     res.set('Content-type', 'text/plain');
@@ -42,7 +40,6 @@ router.post('/users', (req, res, next) => {
                 } else {
                     return bcrypt.hash(req.body.password, 12)
                         .then((hashed_password) => {
-                            // console.log('am i here');
                             const newUser = {
                                 first_name: req.body.firstName,
                                 last_name: req.body.lastName,
