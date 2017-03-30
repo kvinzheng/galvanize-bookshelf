@@ -1,8 +1,8 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt-as-promised');
-// const bcrypt      = require('bcryptjs')
+// const bcrypt = require('bcrypt-as-promised');
+const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const knex = require('../knex.js');
 const humps = require('humps');
@@ -58,7 +58,7 @@ router.post('/users', (req, res, next) => {
                             res.cookie('token', token, {
                                 httpOnly: true,
                                 expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
-                                secure: router.get('env') === 'test' // Set from the NODE_ENV
+                                secure: router.get('env') === 'development' // Set from the NODE_ENV
                             });
                             return knex('users').insert(newUser, '*');
                         })
