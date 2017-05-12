@@ -119,34 +119,40 @@ router.patch('/books/:id', (req, res, next) => {
 });
 
 router.delete('/books/:id', (req, res, next) => {
+    // let book;
     if (isNaN(req.params.id)) {
         res.set('Content-type', 'text/plain');
         res.status(404).send('Not Found');
     } else {
-        let book;
+        // let book;
         knex('books')
               .where('id', req.params.id)
               .first()
               .then((row) => {
                 if (!row) {
                     res.set('Content-Type', 'text/plain')
-                    res.status(404).send('Not Found');
+                    return res.status(404).send('Not Found');
+                    next();
                 } else {
-                    book = row;
-                    return knex('books')
-                        .del()
-                        .where('id', req.params.id);
+                  knex('books').del().where('id', req.params.id)
+                  let book = row;
+                  return book
                 }
             })
-            .then(() => {
+            .catch((err)=>{
+
+            })
+            .then((book) => {
+              // console.log('what is this',book[0]);
               // if( !book){
               // return res.status(404).send('Not Found');
               // }
               // else{
-              if(book){
+              // if(book){
+              // console.log('what is book',book);
               delete book.id;
                res.json(humps.camelizeKeys(book));
-              }
+              // }
               // }
             })
             .catch((err) => {
